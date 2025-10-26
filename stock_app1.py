@@ -3,19 +3,18 @@ import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.title("Stock Market App")
+st.title("Python Stock Market App Using Python")
 st.write("Type a stock symbol below to see its current details.")
-st.write("Examples: AAPL, TSLA, INFY.NS, CMR, SUHASAN")
+st.write("Examples: AAPL, TSLA, INFY.NS, CMR, SUHASAN, MSFT, PYPL, IBM")
 
-# add more companies for suggestions
-companies = ["AAPL", "TSLA", "INFY.NS"]
+companies = ["AAPL", "TSLA", "INFY.NS", "MSFT", "PYPL", "IBM"]
 
 symbol = st.text_input("Enter stock symbol:", "")
 
 if symbol:
     try:
         stock = yf.Ticker(symbol)
-        data = stock.history(period="1mo")  # last 1 month
+        data = stock.history(period="1mo")
         info = stock.info
 
         st.subheader(f"{symbol} details")
