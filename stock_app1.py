@@ -5,25 +5,32 @@ import matplotlib.pyplot as plt
 
 st.title("Stock Market App")
 st.write("Type a stock symbol below to see its current details.")
-st.write("Example: AAPL (Apple), TSLA (Tesla), INFY.NS (Infosys NSE)")
+st.write("Examples: AAPL, TSLA, INFY.NS, CMR, SUHASAN")
 
-ticker = st.text_input("Enter stock symbol:", "AAPL")
-st.success("App loaded successfully!")
+# add more companies for suggestions
+companies = ["AAPL", "TSLA", "INFY.NS"]
 
-if ticker:
+symbol = st.text_input("Enter stock symbol:", "")
+
+if symbol:
     try:
-        data = yf.download(ticker, period="6mo")
+        stock = yf.Ticker(symbol)
+        data = stock.history(period="1mo")  # last 1 month
+        info = stock.info
+
+        st.subheader(f"{symbol} details")
+        st.write("Company Name:", info.get("longName", "N/A"))
+        st.write("Market Price:", info.get("currentPrice", "N/A"))
+        st.write("Market Cap:", info.get("marketCap", "N/A"))
+        st.write("Previous Close:", info.get("previousClose", "N/A"))
+
+        st.subheader("Price chart (last month)")
         if not data.empty:
-            st.subheader(f"Showing data for {ticker.upper()}")
-            st.dataframe(data.tail())
-            st.line_chart(data["Close"])
-            last_price = data["Close"][-1]
-            st.metric("Latest Closing Price", f"${last_price:,.2f}")
+            st.line_chart(data['Close'])
         else:
-            st.warning("No data found for that symbol.")
+            st.write("No historical data available for this stock.")
     except Exception as e:
-        st.error(f"Error fetching data: {e}")
+        st.write("Error fetching data. Make sure the symbol is correct.")
+        st.write(e)
 else:
-    st.info("Please enter a stock symbol above to begin.")
-
-
+    st.write("Please enter a stock symbol from the list above or any valid stock symbol.")
